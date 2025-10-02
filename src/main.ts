@@ -14,6 +14,12 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: '*', // Permitir solicitudes desde cualquier origen
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept',
+  });
+
   await app.listen(3000, '0.0.0.0');
   console.log(`Backend de Inventario corriendo en http://localhost:3000`);
 }
