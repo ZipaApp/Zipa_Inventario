@@ -1,4 +1,101 @@
 # 🐾 E-commerce de Mascotas — Inventario
+# Estructura de carpetas
+```bash
+│
+├── 📄 package.json
+├── 📄 tsconfig.json
+├── 📄 nest-cli.json
+├── 📄 .env
+├── 📄 Dockerfile
+│
+├── 📁 uploads/
+│   ├── 📁 productos/       # Carpeta donde se guardan imágenes de productos
+│   └── 📁 proveedores/     # Carpeta donde se guardan imágenes de proveedores
+│
+├── 📁 src/
+│   ├── 📄 main.ts                 # Punto de arranque NestJS
+│   ├── 📄 app.module.ts           # Módulo raíz del proyecto
+|   |
+│   ├── 📁 almacen/
+│   │   ├── entities/
+│   │   │   └── almacen.entity.ts
+│   │   ├── dto/
+│   │   │   ├── create-almacen.dto.ts
+│   │   │   ├── update-almacen.dto.ts
+│   │   ├── almacen.controller.ts
+│   │   ├── almacen.service.ts
+│   │   └── almacen.module.ts
+│   |
+│   ├── 📁 clasificacion/
+│   │   ├── entities/
+│   │   │   └── clasificacion.entity.ts
+│   │   ├── dto/
+│   │   │   ├── create-clasificacion.dto.ts
+│   │   │   ├── update-clasificacion.dto.ts
+│   │   ├── clasificacion.controller.ts
+│   │   ├── clasificacion.service.ts
+│   │   └── clasificacion.module.ts
+|   |
+│   ├── 📁 comercia/
+│   │   ├── entities/
+│   │   │   └── comercia.entity.ts
+│   │   ├── dto/
+│   │   │   ├── create-comercia.dto.ts
+│   │   │   ├── update-comercia.dto.ts
+│   │   ├── comercia.controller.ts
+│   │   ├── comercia.service.ts
+│   │   └── comercia.module.ts
+│   |
+|   ├── 📁 common
+|   |
+│   ├── 📁 database/
+│   │   ├── database.providers.ts
+│   │   └── database.module.ts
+|   |
+│   ├── 📁 producto/
+│   │   ├── entities/
+│   │   │   └── producto.entity.ts
+│   │   ├── dto/
+│   │   │   ├── create-producto.dto.ts
+│   │   │   ├── update-producto.dto.ts
+│   │   ├── producto.controller.ts
+│   │   ├── producto.service.ts
+│   │   └── producto.module.ts
+│   |
+│   ├── 📁 proveedor/
+│   │   ├── entities/
+│   │   │   └── proveedor.entity.ts
+│   │   ├── dto/
+│   │   │   ├── create-proveedor.dto.ts
+│   │   │   ├── update-proveedor.dto.ts
+│   │   ├── proveedor.controller.ts
+│   │   ├── proveedor.service.ts
+│   │   └── proveedor.module.ts
+│   |
+│   ├── 📁 sede/
+│   │   ├── entities/
+│   │   │   └── sede.entity.ts
+│   │   ├── dto/
+│   │   │   ├── create-sede.dto.ts
+│   │   │   ├── update-sede.dto.ts
+│   │   ├── sede.controller.ts
+│   │   ├── sede.service.ts
+│   │   └── sede.module.ts
+│   |
+│   └── 📁 stock/
+│       ├── entities/
+│       │   └── stock.entity.ts
+│       ├── dto/
+│       │   ├── create-stock.dto.ts
+│       │   ├── update-stock.dto.ts
+│       ├── stock.controller.ts
+│       ├── stock.service.ts
+│       └── stock.module.ts
+|
+│
+│
+└── 📄 README.md
+```
 
 # Actualizacion imagenes
 Este módulo forma parte del backend del **E-commerce de Mascotas**, desarrollado con **NestJS** y **TypeORM**. 
