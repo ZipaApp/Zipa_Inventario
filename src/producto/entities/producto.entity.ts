@@ -15,14 +15,20 @@ export class Producto {
   prodNombre!: string;
 
   @Column({ name: 'Prod_tamaño', type: 'int', nullable: true })
-  prodTamaño!: number;
+  prodTamano!: number;
 
   @Column({ name: 'Prod_precio', type: 'numeric', precision: 10, scale: 2 })
   prodPrecio!: number;
 
   @Column({ name: 'Prod_cantidad', type: 'int', default: 0 })
   prodCantidad!: number;
-
+  
+  @Column({ name: 'Prod_descripcion', type: 'varchar', length: 200, nullable: true })
+  prodDescripcion?: string;
+  
+  @Column({ name: 'Prod_imagen', type: 'text', nullable: true })
+  prodImagen?: string[];
+  
   @ManyToOne(() => Clasificacion, (clasificacion) => clasificacion.productos)
   @JoinColumn({ name: 'Cat_id' })
   clasificacion!: Clasificacion;

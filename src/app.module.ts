@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
+import { join } from 'path';
 import { DatabaseModule } from './database/database.module';
 
 // Importar tus módulos de dominio
@@ -31,6 +33,11 @@ import { ComerciaModule } from './comercia/comercia.module';
         synchronize: false,
       }),
     }),
+    // Multer para subir imágenes a almacenamiento local
+    MulterModule.register({
+      dest: join(__dirname, '..', 'uploads'),
+    }),
+    
     DatabaseModule,
     ClasificacionModule,
     ProductoModule,

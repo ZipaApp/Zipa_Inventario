@@ -1,4 +1,6 @@
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsInt } from 'class-validator';
+
+import { IsString, IsNotEmpty, MaxLength, IsOptional, IsInt, IsArray } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateProveedorDto {
   @IsString()
@@ -7,6 +9,7 @@ export class CreateProveedorDto {
   provRazonSocial!: string;
 
   @IsInt()
+  @Type(() => Number)
   provNit!: number;
 
   @IsString()
@@ -23,5 +26,10 @@ export class CreateProveedorDto {
   @IsOptional()
   @MaxLength(20)
   provTelefono?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  provImagen?: string[];
 }
 

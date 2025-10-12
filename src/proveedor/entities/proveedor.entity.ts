@@ -15,7 +15,10 @@ export class Proveedor {
 
   @Column({ name: 'Prov_responsable', type: 'varchar', length: 70, nullable: true })
   provResponsable!: string;
-
+  
+  @Column({ name: 'Prov_imagen', type: 'text', nullable: true })
+  provImagen?: string[];
+  
   @Column({ name: 'Prov_correo', type: 'varchar', length: 70, nullable: true })
   provCorreo!: string;
 
