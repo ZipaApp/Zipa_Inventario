@@ -12,6 +12,9 @@ export class Stock {
 
   @Column({ name: 'Stk_cantidad', type: 'int', default: 0 })
   stkCantidad!: number;
+  
+  @Column({ name: 'Stk_minimo', type: 'int', default: 0 }) 
+  stkMinimo!: number;
 
   @ManyToOne(() => Almacen, (almacen) => almacen.stocks)
   @JoinColumn({ name: 'Alm_id' })

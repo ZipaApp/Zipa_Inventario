@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+} from 'typeorm';
 import { Clasificacion } from '../../clasificacion/entities/clasificacion.entity';
 import { Stock } from '../../stock/entities/stock.entity';
 import { Comercia } from '../../comercia/entities/comercia.entity';
@@ -22,20 +29,29 @@ export class Producto {
 
   @Column({ name: 'Prod_cantidad', type: 'int', default: 0 })
   prodCantidad!: number;
-  
+
   @Column({ name: 'Prod_descripcion', type: 'varchar', length: 200, nullable: true })
   prodDescripcion?: string;
-  
-  @Column({ name: 'Prod_imagen', type: 'text', nullable: true })
-  prodImagen?: string[];
-  
-  @ManyToOne(() => Clasificacion, (clasificacion) => clasificacion.productos)
-  @JoinColumn({ name: 'Cat_id' })
-  clasificacion!: Clasificacion;
 
+  @Column({ name: 'Prod_imagen', type: 'text', array: true, nullable: true })
+  prodImagen?: string[];
+
+  // === RELACIÓN N-N CON CLASIFICACION ===
+  @ManyToMany(() => Clasificacion, (clasificacion) => clasificacion.productos, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'Producto_Clasificacion', // tabla intermedia
+    joinColumn: { name: 'Prod_id', referencedColumnName: 'prodId' },
+    inverseJoinColumn: { name: 'Cat_id', referencedColumnName: 'catId' },
+  })
+  clasificaciones!: Clasificacion[];
+
+  // === RELACIONES EXISTENTES ===
   @OneToMany(() => Stock, (stock) => stock.producto)
   stocks!: Stock[];
 
   @OneToMany(() => Comercia, (comercia) => comercia.producto)
   comercios!: Comercia[];
 }
+

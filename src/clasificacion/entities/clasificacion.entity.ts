@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from 'typeorm';
 import { Producto } from '../../producto/entities/producto.entity';
 
 @Entity('Clasificacion')
@@ -9,6 +14,8 @@ export class Clasificacion {
   @Column({ name: 'Cat_nombre', type: 'varchar', length: 50 })
   catNombre!: string;
 
-  @OneToMany(() => Producto, (producto) => producto.clasificacion)
+  // === RELACIÓN N-N CON PRODUCTO ===
+  @ManyToMany(() => Producto, (producto) => producto.clasificaciones)
   productos!: Producto[];
 }
+

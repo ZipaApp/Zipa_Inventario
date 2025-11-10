@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Producto } from './entities/producto.entity';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
@@ -15,40 +15,32 @@ export class ProductoService {
     private readonly clasificacionRepository: Repository<Clasificacion>,
   ) {}
 
-  /**
-   * Crea un nuevo producto y guarda las rutas de sus imágenes
-   */
   async create(dto: CreateProductoDto, imagePaths?: string[]): Promise<Producto> {
-    const clasificacion = await this.clasificacionRepository.findOneBy({ catId: dto.catId });
-    if (!clasificacion) {
-      throw new NotFoundException(`Clasificación con id ${dto.catId} no encontrada`);
+    // 🔹 Buscar múltiples clasificaciones por sus IDs
+    const clasificaciones = await this.clasificacionRepository.findBy({ catId: In(dto.catIds) });
+    if (!clasificaciones.length) {
+      throw new NotFoundException('Ninguna de las clasificaciones especificadas fue encontrada');
     }
 
     const producto = this.productoRepository.create({
       ...dto,
-      clasificacion,
+      clasificaciones,
       prodImagen: imagePaths || [],
     });
 
     return this.productoRepository.save(producto);
   }
 
-  /**
-   * Devuelve todos los productos con sus relaciones
-   */
   async findAll(): Promise<Producto[]> {
     return this.productoRepository.find({
-      relations: ['clasificacion', 'stocks', 'comercios'],
+      relations: ['clasificaciones', 'stocks', 'comercios'],
     });
   }
 
-  /**
-   * Devuelve un producto por su id
-   */
   async findOne(id: number): Promise<Producto> {
     const producto = await this.productoRepository.findOne({
       where: { prodId: id },
-      relations: ['clasificacion', 'stocks', 'comercios'],
+      relations: ['clasificaciones', 'stocks', 'comercios'],
     });
 
     if (!producto) {
@@ -58,24 +50,20 @@ export class ProductoService {
     return producto;
   }
 
-  /**
-   * Actualiza un producto y sus imágenes si se proporcionan
-   */
   async update(id: number, dto: UpdateProductoDto, imagePaths?: string[]): Promise<Producto> {
     const producto = await this.findOne(id);
 
-    if (dto.catId) {
-      const clasificacion = await this.clasificacionRepository.findOneBy({ catId: dto.catId });
-      if (!clasificacion) {
-        throw new NotFoundException(`Clasificación con id ${dto.catId} no encontrada`);
+    // 🔹 Si envía nuevas clasificaciones
+    if (dto.catIds && dto.catIds.length > 0) {
+      const clasificaciones = await this.clasificacionRepository.findBy({ catId: In(dto.catIds) });
+      if (!clasificaciones.length) {
+        throw new NotFoundException('Algunas clasificaciones no existen');
       }
-      producto.clasificacion = clasificacion;
+      producto.clasificaciones = clasificaciones;
     }
 
-    // Actualiza los demás campos
     Object.assign(producto, dto);
 
-    // Si se suben nuevas imágenes, las añade al arreglo existente
     if (imagePaths && imagePaths.length > 0) {
       producto.prodImagen = [...(producto.prodImagen || []), ...imagePaths];
     }
@@ -83,25 +71,12 @@ export class ProductoService {
     return this.productoRepository.save(producto);
   }
 
-  /**
-   * Actualiza solo las imágenes de un producto (reemplazando las existentes)
-   */
   async updateImagenes(id: number, imagePaths: string[]): Promise<Producto> {
     const producto = await this.findOne(id);
-
-    if (!producto) {
-      throw new NotFoundException(`Producto con id ${id} no encontrado`);
-    }
-
-    // Reemplaza completamente las imágenes existentes
     producto.prodImagen = imagePaths;
-
     return this.productoRepository.save(producto);
   }
 
-  /**
-   * Elimina un producto
-   */
   async remove(id: number): Promise<void> {
     const producto = await this.findOne(id);
     await this.productoRepository.remove(producto);

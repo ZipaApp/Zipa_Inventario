@@ -1,4 +1,14 @@
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+  IsArray,
+  ArrayNotEmpty,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateProductoDto {
@@ -36,9 +46,11 @@ export class CreateProductoDto {
   @Type(() => Number)
   prodCantidad?: number;
 
-  @IsInt()
-  @IsNotEmpty()
+  // 🔹 CAMBIO CLAVE: ahora acepta múltiples clasificaciones
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsInt({ each: true })
   @Type(() => Number)
-  catId!: number; // se usa para vincular con Clasificación
+  catIds!: number[];
 }
 

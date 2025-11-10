@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
 import { DatabaseModule } from './database/database.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 // Importar tus módulos de dominio
 import { ClasificacionModule } from './clasificacion/clasificacion.module';
@@ -13,12 +14,29 @@ import { StockModule } from './stock/stock.module';
 import { ProveedorModule } from './proveedor/proveedor.module';
 import { SedeModule } from './sede/sede.module';
 import { ComerciaModule } from './comercia/comercia.module';
+import { MovimientoModule } from './movimiento/movimiento.module';
 
 @Module({
   imports: [
+    // Variables de entorno globales
     ConfigModule.forRoot({
-      isGlobal: true, // variables disponibles en toda la app
+      isGlobal: true,
     }),
+    
+    // Conexión a notificaciones
+    ClientsModule.register([
+      {
+        name: 'NOTIFICACIONES_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://rabbitmq:5672'], // usa el hostname del contenedor RabbitMQ
+          queue: 'notificaciones_queue',
+          queueOptions: { durable: true },
+        },
+      },
+    ]),
+    
+    // Conexión a PostgreSQL usando variables de entorno
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -30,14 +48,16 @@ import { ComerciaModule } from './comercia/comercia.module';
         password: configService.get<string>('POSTGRES_PASSWORD'),
         database: configService.get<string>('POSTGRES_DB'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false,
+        synchronize: false, 
       }),
     }),
-    // Multer para subir imágenes a almacenamiento local
+
+    // Configuración para subida de imágenes
     MulterModule.register({
       dest: join(__dirname, '..', 'uploads'),
     }),
-    
+
+    // Módulos del dominio
     DatabaseModule,
     ClasificacionModule,
     ProductoModule,
@@ -46,6 +66,7 @@ import { ComerciaModule } from './comercia/comercia.module';
     ProveedorModule,
     SedeModule,
     ComerciaModule,
+    MovimientoModule, 
   ],
 })
 export class AppModule {}
