@@ -9,5 +9,8 @@ export class CreateStockDto {
 
   @IsNumber()
   stkCantidad!: number;
+  
+  @IsNumber()
+  stkMinimo!: number;
 }
 
